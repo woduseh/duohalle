@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- 공통 영역 -->
+  <th:block th:replace="fragments/meta :: metaFragment"></th:block>
+  <th:block th:replace="fragments/css :: cssFragment"></th:block>
+  <th:block th:replace="fragments/script :: scriptFragment"></th:block>
+  <title>듀오할래</title>
+
+  <!-- 페이지 별 영역 -->
+  <th:block layout:fragment="meta"></th:block>
+  <th:block layout:fragment="css"></th:block>
+  <th:block layout:fragment="script"></th:block>
+</head>
+<body>
+<th:block th:replace="fragments/header :: headerFragment"></th:block>
+<th:block layout:fragment="content"></th:block>
+<th:block th:replace="fragments/footer :: footerFragment"></th:block>
+</body>
+</html>
