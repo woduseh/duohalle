@@ -106,6 +106,11 @@ public class Account extends BaseTimeEntity {
         return emailVerified;
     }
 
+    public void makeEmailVerified() {
+        this.emailVerified = true;
+        this.joinedAt = LocalDateTime.now();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

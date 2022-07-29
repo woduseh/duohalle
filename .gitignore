@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### 보안 정보 ###
+application-email.yml

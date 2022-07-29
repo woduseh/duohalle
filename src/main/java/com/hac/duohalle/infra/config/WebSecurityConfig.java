@@ -9,14 +9,22 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
-public class WebSecurityConfigure {
+public class WebSecurityConfig {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)
