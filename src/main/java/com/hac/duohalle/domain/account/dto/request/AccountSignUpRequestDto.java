@@ -1,4 +1,6 @@
-package com.hac.duohalle.domain.account.form;
+package com.hac.duohalle.domain.account.dto.request;
+
+import static com.hac.duohalle.infra.config.WebSecurityConfig.getPasswordEncoder;
 
 import com.hac.duohalle.domain.account.entity.Account;
 import javax.persistence.Column;
@@ -8,7 +10,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-public class SignUpForm {
+public class AccountSignUpRequestDto {
 
     @Column(unique = true)
     @Email(message = "이메일 형식이 올바르지 않습니다.")
@@ -25,7 +27,7 @@ public class SignUpForm {
         return Account.builder()
                 .email(email)
                 .nickname(nickname)
-                .password(password)
+                .password(getPasswordEncoder().encode(password))
                 .build();
     }
 }

@@ -22,7 +22,7 @@ public class WebSecurityConfig {
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
+    public static PasswordEncoder getPasswordEncoder() {
         return passwordEncoder;
     }
 
@@ -32,8 +32,10 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .antMatchers("/js/**", "/css/**", "/img/**", "/fonts/**", "/vendor/**")
                 .permitAll()
-                .antMatchers("/", "/login", "/sign-up", "/check-email", "/check-email-token",
-                        "/email-login", "/check-email-login", "/login-link")
+                .antMatchers("/", "/login", "/sign-up", "/sign-in", "/sign-up/confirm/**",
+                        "/check-email",
+                        "/check-email-token",
+                        "/email-login", "/check-email-login", "/login-link", "/h2-console/**")
                 .permitAll()
                 .mvcMatchers(HttpMethod.GET, "profile/*")
                 .permitAll()

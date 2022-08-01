@@ -1,9 +1,7 @@
 package com.hac.duohalle.domain.account.controller;
 
-import com.hac.duohalle.domain.account.entity.Account;
-import com.hac.duohalle.domain.account.form.SignUpForm;
+import com.hac.duohalle.domain.account.dto.request.AccountSignUpRequestDto;
 import com.hac.duohalle.domain.account.service.AccountService;
-import java.io.IOException;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,7 @@ public class AccountController {
 
     @GetMapping
     public String signUp(Model model) {
-        model.addAttribute(new SignUpForm());
+        model.addAttribute(new AccountSignUpRequestDto());
         return "account/sign-up";
     }
 
@@ -39,14 +37,14 @@ public class AccountController {
     }
 
     @PostMapping
-    public String signUp(@Valid SignUpForm form, Errors error)
-            throws MessagingException, IOException {
+    public String signUp(@Valid AccountSignUpRequestDto form, Errors error)
+            throws MessagingException {
         if (error.hasErrors()) {
             logger.info("sign-up failure - form: {}, error: {}", form, error.getAllErrors());
             return "account/sign-up";
         }
 
-        Account account = accountService.signUp(form);
-        return "redirect:/";
+        accountService.signUp(form);
+        return "redirect:/sign-in";
     }
 }

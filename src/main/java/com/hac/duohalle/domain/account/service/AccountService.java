@@ -2,11 +2,10 @@ package com.hac.duohalle.domain.account.service;
 
 import static com.hac.duohalle.infra.mail.dto.MailRequestDto.signInConfirmMail;
 
+import com.hac.duohalle.domain.account.dto.request.AccountSignUpRequestDto;
 import com.hac.duohalle.domain.account.entity.Account;
-import com.hac.duohalle.domain.account.form.SignUpForm;
 import com.hac.duohalle.domain.account.repository.AccountRepository;
 import com.hac.duohalle.infra.mail.service.MailService;
-import java.io.IOException;
 import java.util.Optional;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -23,14 +22,21 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final MailService mailService;
 
-    public Account signUp(SignUpForm form) throws MessagingException, IOException {
-        mailService.sendMail(signInConfirmMail(form));
-        return accountRepository.save(form.toAccount());
+    @Transactional
+    public Account signUp(AccountSignUpRequestDto form) throws MessagingException {
+        try {
+            accountInfoDuplicateCheck(form.getEmail(), form.getNickname());
+            accountRepository.save(form.toAccount());
+            mailService.sendMail(signInConfirmMail(form));
+        } catch (IllegalStateException e) {
+            logger.info("sign-up failure - form: {}, error: {}", form, e.getMessage());
+        }
+        return null;
     }
 
     @Transactional
     public void confirm(String email) {
-        Optional<Account> account = accountRepository.findByEmail(email);
+        Optional<Account> account = accountRepository.findAccountByEmail(email);
 
         account.ifPresentOrElse(acc -> {
                     acc.makeEmailVerified();
@@ -38,5 +44,17 @@ public class AccountService {
                     logger.info("Account Email {} confirmed", acc.getEmail());
                 },
                 () -> logger.info("Account Email {} not found", email));
+    }
+
+    private void accountInfoDuplicateCheck(String email, String nickname) {
+        Optional<Account> accountFindByEmail = accountRepository.findAccountByEmail(email);
+        if (accountFindByEmail.isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        Optional<Account> accountFindByNickname = accountRepository.findAccountByNickname(nickname);
+        if (accountFindByNickname.isPresent()) {
+            throw new IllegalArgumentException("Nickname already exists");
+        }
     }
 }

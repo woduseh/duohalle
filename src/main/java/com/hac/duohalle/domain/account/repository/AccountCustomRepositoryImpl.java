@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class AccountCustomRepositoryImpl implements AccountCustomRepository {
-
     private final JPAQueryFactory jpaQueryFactory;
 
     public AccountCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
@@ -17,9 +16,16 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
     }
 
     @Override
-    public Optional<Account> findByEmail(String email) {
+    public Optional<Account> findAccountByEmail(String email) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(account)
                 .where(account.email.eq(email))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Account> findAccountByNickname(String nickname) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(account)
+                .where(account.nickname.eq(nickname))
                 .fetchOne());
     }
 }

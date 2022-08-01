@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,11 +41,11 @@ public class Account extends BaseTimeEntity {
     @Length(min = 2, max = 20, message = "닉네임은 2자 이상 20자 이하여야 합니다.")
     private String nickname;
 
-    @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d).{8,20}$", message = "비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상 20자 이하여야 합니다.")
-    @Column(length = 20)
+    // Encrypted By Bcrypt
+    @Column(length = 72)
     private String password;
 
-    private boolean emailVerified;
+    private boolean emailVerified = false;
 
     private String emailCheckToken;
 

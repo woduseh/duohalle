@@ -25,38 +25,40 @@ tasks.jar {
 
 dependencies {
     /* Spring Boot */
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
-    implementation 'org.springframework.boot:spring-boot-starter-quartz'
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-batch:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-quartz:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.0'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.batch:spring-batch-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
+    testImplementation 'org.springframework.batch:spring-batch-test:4.3.6'
+    testImplementation 'org.springframework.security:spring-security-test:5.7.1'
 
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.7.0'
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.0'
 
     /* Thymeleaf */
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5:3.0.4.RELEASE'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
 
     /* lombok */
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
     testImplementation 'org.projectlombok:lombok:1.18.24'
 
+    /* GreenMail */
+    implementation 'com.icegreen:greenmail-junit5:1.6.9'
+
     /* H2 DB */
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2:2.1.212'
 
     /* PostgreSQL DB */
-    runtimeOnly 'org.postgresql:postgresql'
-
+    runtimeOnly 'org.postgresql:postgresql:42.3.6'
 
     /* QueryDSL */
     implementation('com.querydsl:querydsl-jpa:5.0.0')
@@ -71,7 +73,6 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-// QueryDSL
 sourceSets {
     main {
         java {

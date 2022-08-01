@@ -2,7 +2,6 @@ package com.hac.duohalle.domain.account.controller;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -39,9 +38,8 @@ class AccountControllerTest {
     @Test
     void signUpTest() throws Exception {
         mvc.perform(get("/sign-up"))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("account/sign-up"))
-                .andExpect(model().attributeExists("signUpForm"));
+                .andExpect(model().attributeExists("accountSignUpRequestDto"));
     }
 }

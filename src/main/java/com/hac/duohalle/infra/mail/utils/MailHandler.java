@@ -10,17 +10,15 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 public class MailHandler {
-
     private final JavaMailSender sender;
     private final MimeMessage message;
     private final MimeMessageHelper messageHelper;
 
-    // 생성자
     public MailHandler(JavaMailSender jSender) throws
             MessagingException {
         this.sender = jSender;
-        message = jSender.createMimeMessage();
-        messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+        this.message = jSender.createMimeMessage();
+        this.messageHelper = new MimeMessageHelper(message, true, "UTF-8");
     }
 
     // 보내는 사람 이메일
