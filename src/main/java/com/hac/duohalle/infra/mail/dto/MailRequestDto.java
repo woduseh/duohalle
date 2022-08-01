@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @Builder
@@ -13,8 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 @NoArgsConstructor
 public class MailRequestDto {
 
-    @Value("${site.domain}")
-    private static String siteDomain;
+    // TODO:
+    //  @Value("${site.domain}")
+    //  private static String siteDomain;
+    // 로 수정
+    private static String siteDomain = "http://localhost:8080";
 
     private String address;
     private String title;
@@ -37,7 +39,7 @@ public class MailRequestDto {
                 .message("안녕하세요, " + accountSignUpRequestDto.getNickname() + "님.\n"
                         + "Duohalle 회원가입을 환영합니다.\n"
                         + "아래 링크를 클릭하여 회원가입을 완료하세요.\n"
-                        + siteDomain + "/sign-up/confirm?email="
+                        + siteDomain + "/sign-up/confirm/"
                         + accountSignUpRequestDto.getEmail() + "\n"
                         + "감사합니다.")
                 .build();
