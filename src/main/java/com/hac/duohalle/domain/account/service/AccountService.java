@@ -7,7 +7,6 @@ import com.hac.duohalle.domain.account.entity.Account;
 import com.hac.duohalle.domain.account.repository.AccountRepository;
 import com.hac.duohalle.infra.mail.service.MailService;
 import java.util.Optional;
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ public class AccountService {
     private final MailService mailService;
 
     @Transactional
-    public Account signUp(AccountSignUpRequestDto form) throws MessagingException {
+    public Account signUp(AccountSignUpRequestDto form) {
         try {
             accountInfoDuplicateCheck(form.getEmail(), form.getNickname());
             accountRepository.save(form.toAccount());

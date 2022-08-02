@@ -12,10 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MailRequestDto {
 
-    // TODO:
-    //  @Value("${site.domain}")
-    //  private static String siteDomain;
-    // 로 수정
     private static String siteDomain = "http://localhost:8080";
 
     private String address;

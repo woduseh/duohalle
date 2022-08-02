@@ -51,9 +51,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     testImplementation 'org.projectlombok:lombok:1.18.24'
 
-    /* GreenMail */
-    implementation 'com.icegreen:greenmail-junit5:1.6.9'
-
     /* H2 DB */
     runtimeOnly 'com.h2database:h2:2.1.212'
 

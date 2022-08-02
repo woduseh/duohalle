@@ -30,6 +30,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception {
         http.authorizeRequests()
+                // resources
                 .antMatchers("/js/**", "/css/**", "/img/**", "/fonts/**", "/vendor/**")
                 .permitAll()
                 .antMatchers("/", "/login", "/sign-up", "/sign-in", "/sign-up/confirm/**",
@@ -42,8 +43,6 @@ public class WebSecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .disable()
-                .csrf()
                 .disable()
                 .headers()
                 .disable()
