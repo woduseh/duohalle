@@ -1,7 +1,9 @@
 plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+    id "com.github.node-gradle.node" version "3.4.0"
     id 'java'
+    id 'jacoco'
 }
 
 /* npm install */
@@ -33,6 +35,10 @@ repositories {
     mavenCentral()
 }
 
+jacoco {
+    toolVersion = "0.8.8"
+}
+
 tasks.jar {
     enabled = false
 }
@@ -40,8 +46,6 @@ tasks.jar {
 
 dependencies {
     /* Spring Boot */
-    implementation 'org.springframework.boot:spring-boot-starter-batch:2.7.0'
-    implementation 'org.springframework.boot:spring-boot-starter-quartz:2.7.0'
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.0'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.7.0'
@@ -58,14 +62,14 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.0'
 
     /* Thymeleaf */
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5:3.0.4.RELEASE'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
-    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-spring-security5-dialect:3.1.0'
 
     /* lombok */
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    testImplementation 'org.projectlombok:lombok:1.18.24'
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     /* H2 DB */
     runtimeOnly 'com.h2database:h2:2.1.212'
@@ -79,11 +83,97 @@ dependencies {
     annotationProcessor(
             'javax.persistence:javax.persistence-api:2.2',
             'javax.annotation:javax.annotation-api:1.3.2',
-            "com.querydsl:querydsl-apt:5.0.0:jpa")
+            'com.querydsl:querydsl-apt:5.0.0:jpa')
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+task testCoverage(type: Test) {
+    group 'verification'
+    description 'Runs the unit tests with coverage'
+
+    dependsOn(':test',
+            ':jacocoTestReport',
+            ':jacocoTestCoverageVerification')
+
+    tasks['jacocoTestReport'].mustRunAfter(tasks['test'])
+    tasks['jacocoTestCoverageVerification'].mustRunAfter(tasks['jacocoTestReport'])
+}
+
+/* jacoco */
+jacocoTestReport {
+    dependsOn test
+    reports {
+        html.enabled true
+        xml.enabled true
+        csv.enabled false
+    }
+
+    def Qdomains = []
+    for (qPattern in '**/QA'..'**/QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, excludes: [
+                            '**/BlogApplication*',
+                            '**/*Request*',
+                            '**/*Response*',
+                            '**/*Dto*',
+                            '**/*OAuthClient*',
+                            '**/*Interceptor*',
+                            '**/*Exception*',
+                            '**/*Storage*',
+                            '**/*BaseDate*',
+                            '**/*PageController*'
+                    ] + Qdomains)
+                })
+        )
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+    def Qdomains = []
+    for (qPattern in '*.QA'..'*.QZ') {
+        Qdomains.add(qPattern + '*')
+    }
+
+    violationRules {
+        rule {
+            element = 'CLASS'
+            enabled = true
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            excludes = [
+                    '**.*BlogApplication*',
+                    '**.*Request*',
+                    '**.*Response*',
+                    '**.*Dto*',
+                    '**.*OAuthClient*',
+                    '**.*Interceptor*',
+                    '**.*Exception*',
+                    '**.*Storage*',
+                    '**.*BaseDate*',
+                    '**.*PageController*',
+            ] + Qdomains
+        }
+    }
 }
 
 sourceSets {
