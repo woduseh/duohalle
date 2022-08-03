@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -19,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private static final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Bean
     public static PasswordEncoder getPasswordEncoder() {
@@ -31,29 +30,15 @@ public class WebSecurityConfig {
             throws Exception {
         http.authorizeRequests()
                 // resources
-                .antMatchers("/js/**", "/css/**", "/img/**", "/fonts/**", "/vendor/**")
+                .antMatchers("/js/**", "/css/**", "/img/**", "/fonts/**", "/vendor/**",
+                        "/node_modules/**")
                 .permitAll()
-                .antMatchers("/", "/login", "/sign-up", "/sign-in", "/sign-up/confirm/**",
-                        "/check-email",
-                        "/check-email-token",
-                        "/email-login", "/check-email-login", "/login-link", "/h2-console/**")
+                .antMatchers("/", "/login", "/sign-up", "/sign-in", "/sign-up/**",
+                        "/email-login", "/h2-console/**")
                 .permitAll()
                 .mvcMatchers(HttpMethod.GET, "profile/*")
                 .permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .disable()
-                .headers()
-                .disable()
-                .httpBasic()
-                .disable()
-                .rememberMe()
-                .disable()
-                .logout()
-                .disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling();
 

@@ -1,0 +1,16 @@
+{
+  "name": "static",
+  "version": "0.0.1",
+  "description": "duohalle frontend library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JYHwang",
+  "license": "ISC",
+  "dependencies": {
+    "@popperjs/core": "^2.11.5",
+    "bootstrap": "^5.2.0",
+    "jquery": "^3.6.0"
+  }
+}

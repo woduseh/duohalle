@@ -38,3 +38,6 @@ out/
 
 ### 보안 정보 ###
 application-email.yml
+
+### npm ###
+node_modules/

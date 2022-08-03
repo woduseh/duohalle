@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="~{layout/default}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<th:block layout:fragment="content">
+  <body class="bg-light">
+  <div class="container">
+    <div class="py-5 text-center">
+      <h2>이메일 인증</h2>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card-body">
+          <div class="alert alert-success" role="alert" th:if="${isEmailVerified}">
+            이메일 인증이 완료되었습니다.
+          </div>
+          <div class="alert alert-danger" role="alert" th:if="${!isEmailVerified}">
+            이메일 확인 링크가 정확하지 않습니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="fragments.html :: footer"></div>
+    </div>
+  </div>
+  </body>
+</th:block>
+</html>

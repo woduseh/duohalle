@@ -1,16 +1,19 @@
 package com.hac.duohalle.domain.account.service;
 
-import static com.hac.duohalle.infra.mail.dto.MailRequestDto.signInConfirmMail;
-
+import com.hac.duohalle.domain.account.dto.request.AccountConfirmRequestDto;
 import com.hac.duohalle.domain.account.dto.request.AccountSignUpRequestDto;
 import com.hac.duohalle.domain.account.entity.Account;
 import com.hac.duohalle.domain.account.repository.AccountRepository;
 import com.hac.duohalle.infra.mail.service.MailService;
+import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -22,38 +25,67 @@ public class AccountService {
     private final MailService mailService;
 
     @Transactional
-    public Account signUp(AccountSignUpRequestDto form) {
+    public Account signUp(AccountSignUpRequestDto dto) {
         try {
-            accountInfoDuplicateCheck(form.getEmail(), form.getNickname());
-            accountRepository.save(form.toAccount());
-            mailService.sendMail(signInConfirmMail(form));
+            accountInfoDuplicateCheck(dto);
+            Account newAccount = saveNewAccount(dto);
+            mailService.sendSignUpConfirmEmail(newAccount);
+
+            return newAccount;
         } catch (IllegalStateException e) {
-            logger.info("sign-up failure - form: {}, error: {}", form, e.getMessage());
+            logger.warn("sign-up failure - form: {}, Error: {}", dto, e.getMessage());
         }
-        return null;
+        return new Account();
     }
 
-    @Transactional
-    public void confirm(String email) {
-        Optional<Account> account = accountRepository.findAccountByEmail(email);
-
-        account.ifPresentOrElse(acc -> {
-                    acc.makeEmailVerified();
-                    accountRepository.save(acc);
-                    logger.info("Account Email {} confirmed", acc.getEmail());
-                },
-                () -> logger.info("Account Email {} not found", email));
+    private Account saveNewAccount(AccountSignUpRequestDto dto) {
+        Account account = dto.toAccount();
+        account.generateEmailCheckToken();
+        return accountRepository.save(account);
     }
 
-    private void accountInfoDuplicateCheck(String email, String nickname) {
-        Optional<Account> accountFindByEmail = accountRepository.findAccountByEmail(email);
+    private void accountInfoDuplicateCheck(AccountSignUpRequestDto dto) {
+        Optional<Account> accountFindByEmail = accountRepository.findAccountByEmail(dto.getEmail());
         if (accountFindByEmail.isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        Optional<Account> accountFindByNickname = accountRepository.findAccountByNickname(nickname);
+        Optional<Account> accountFindByNickname = accountRepository.findAccountByNickname(
+                dto.getNickname());
         if (accountFindByNickname.isPresent()) {
             throw new IllegalArgumentException("Nickname already exists");
         }
+    }
+
+    @Transactional
+    public Account confirm(AccountConfirmRequestDto dto) {
+        Optional<Account> account = accountRepository.findAccountByEmail(dto.getEmail());
+
+        account.ifPresentOrElse(acc -> makeEmailVerified(acc, dto),
+                () -> logger.warn("Account not found - Email: {} ", dto.getEmail()));
+
+        return account.orElse(new Account());
+    }
+
+    private void makeEmailVerified(Account account, AccountConfirmRequestDto dto) {
+        try {
+            if (account.getEmailCheckToken().equals(dto.getToken())) {
+                account.makeEmailVerified();
+                accountRepository.save(account);
+                logger.info("Account confirmed - Email: {} ", account.getEmail());
+            } else {
+                throw new IllegalStateException("Email check token is not matched");
+            }
+        } catch (IllegalStateException e) {
+            logger.warn("Account confirm fail - Email: {}, Error: {}", account.getEmail(),
+                    e.getMessage());
+        }
+    }
+
+    public void login(Account account) {
+        SecurityContextHolder.getContext()
+                .setAuthentication(new UsernamePasswordAuthenticationToken(
+                        account.getNickname(), account.getPassword(),
+                        List.of(new SimpleGrantedAuthority("ROLE_USER"))));
     }
 }

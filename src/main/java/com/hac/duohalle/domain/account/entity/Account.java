@@ -3,6 +3,7 @@ package com.hac.duohalle.domain.account.entity;
 import com.hac.duohalle.domain.global.entity.BaseTimeEntity;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,6 +49,8 @@ public class Account extends BaseTimeEntity {
     private boolean emailVerified = false;
 
     private String emailCheckToken;
+
+    private LocalDateTime emailCheckTokenGeneratedAt;
 
     @Comment("가입일")
     private LocalDateTime joinedAt;
@@ -101,13 +104,18 @@ public class Account extends BaseTimeEntity {
     @Comment("파티 갱신 알림 웹 푸시 사용 여부")
     private boolean partyUpdatedNoticeByWebPush;
 
-    private boolean isEmailVerified() {
+    public boolean isEmailVerified() {
         return emailVerified;
     }
 
     public void makeEmailVerified() {
         this.emailVerified = true;
         this.joinedAt = LocalDateTime.now();
+    }
+
+    public void generateEmailCheckToken() {
+        this.emailCheckToken = UUID.randomUUID().toString();
+        this.emailCheckTokenGeneratedAt = LocalDateTime.now();
     }
 
     @Override

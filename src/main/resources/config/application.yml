@@ -5,8 +5,8 @@ logging:
         jdbc:
           core: info
 
-site:
-  domain: http://localhost:8080
+app:
+  host: http://localhost:8080
 
 # H2
 spring:

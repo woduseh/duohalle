@@ -1,21 +1,25 @@
 package com.hac.duohalle.infra.mail.service;
 
+import com.hac.duohalle.domain.account.entity.Account;
+import com.hac.duohalle.infra.config.AppProperties;
 import com.hac.duohalle.infra.mail.dto.MailRequestDto;
 import com.hac.duohalle.infra.mail.utils.MailHandler;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MailService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private JavaMailSender mailSender;
-//    private final TemplateEngine templateEngine;
-//    private final AppProperties appProperties;
+    private final JavaMailSender mailSender;
+    private final TemplateEngine templateEngine;
+    private final AppProperties appProperties;
 
     public void sendMail(MailRequestDto mailDto) {
         logger.info("sending mail - mailDto: {}", mailDto);
@@ -29,26 +33,29 @@ public class MailService {
 
             mailHandler.send();
         } catch (Exception e) {
-            logger.info("sending mail failure - mailDto: {}, error: {}", mailDto, e.getMessage());
+            logger.warn("sending mail failure - mailDto: {}, Error: {}", mailDto, e.getMessage());
         }
     }
 
-//    public void sendSignUpConfirmEmail(AccountSignUpRequestDto dto) {
-//        Context context = new Context();
-//
-//        context.setVariable("host", appProperties.getHost());
-//        context.setVariable("link", "/check-email-token?token=" + newAccount.getEmailCheckToken() +
-//                "&email=" + dto.getEmail());
-//        context.setVariable("nickname", dto.getNickname());
-//        context.setVariable("linkName", "이메일 인증하기");
-//        String message = templateEngine.process("email/sign-up-confirm", context);
-//
-//        MailRequestDto mailDto = MailRequestDto.builder()
-//                .address(dto.getEmail())
-//                .title("[Duohalle] 가입 인증 메일")
-//                .message(message)
-//                .build();
-//
-//        sendMail(mailDto);
-//    }
+    public MailRequestDto sendSignUpConfirmEmail(Account newAccount) {
+        Context context = new Context();
+
+        context.setVariable("host", appProperties.getHost());
+        context.setVariable("link",
+                "/sign-up/check-email-token?token=" + newAccount.getEmailCheckToken() +
+                        "&email=" + newAccount.getEmail());
+        context.setVariable("nickname", newAccount.getNickname());
+        context.setVariable("linkName", "이메일 인증하기");
+        String message = templateEngine.process("mail/confirm-mail", context);
+
+        MailRequestDto mailDto = MailRequestDto.builder()
+                .address(newAccount.getEmail())
+                .title("[Duohalle] 가입 인증 메일")
+                .message(message)
+                .build();
+
+        sendMail(mailDto);
+
+        return mailDto;
+    }
 }

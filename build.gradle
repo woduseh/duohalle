@@ -4,6 +4,21 @@ plugins {
     id 'java'
 }
 
+/* npm install */
+node {
+    version = '16.16.0'
+    download = true
+    nodeModulesDir = file("${projectDir}/src/main/resources/static")
+}
+
+task copyFrontLib(type: Copy) {
+    from "${projectDir}/src/main/resources/static"
+    into "${projectDir}/build/resources/main/static/."
+}
+
+copyFrontLib.dependsOn npmInstall
+compileJava.dependsOn copyFrontLib
+
 group = 'com.hac'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
@@ -45,6 +60,7 @@ dependencies {
     /* Thymeleaf */
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5:3.0.4.RELEASE'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-spring-security5-dialect:3.1.0'
 
     /* lombok */
     compileOnly 'org.projectlombok:lombok:1.18.24'
