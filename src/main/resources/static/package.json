@@ -9,8 +9,10 @@
   "author": "JYHwang",
   "license": "ISC",
   "dependencies": {
+    "@mdi/font": "^7.0.96",
     "@popperjs/core": "^2.11.5",
     "bootstrap": "^5.2.0",
+    "jdenticon": "^3.1.1",
     "jquery": "^3.6.0"
   }
 }

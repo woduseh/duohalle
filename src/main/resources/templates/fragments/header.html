@@ -4,7 +4,7 @@
   <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" th:href="@{/}">
-        <img th:src="@{/img/logo_sm.png}" alt="듀오할래" width="30" height="30"
+        <img th:src="@{/img/logo_sm.png}" alt="듀오할래" width="24" height="24"
              class="rounded border"/>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -40,10 +40,15 @@
             <a class="nav-link" th:href="@{/sign-up}">회원가입</a>
           </li>
           <li class="nav-link" sec:authorize="isAuthenticated()">
-            <a class="nav-link" th:href="@{/notifications}">알림</a>
+            <a class="nav-link" th:href="@{/notifications}">
+              <i class="mdi mdi-bell-outline" aria-hidden="true"></i>
+            </a>
           </li>
           <li class="nav-link" sec:authorize="isAuthenticated()">
-            <a class="nav-link" th:href="@{/party/create}">파티 창설</a>
+            <a class="nav-link" th:href="@{/party/create}">
+              <i class="mdi mdi-plus" aria-hidden="true"></i>
+              파티 창설
+            </a>
           </li>
         </ul>
         <ul class="navbar-nav">
@@ -55,7 +60,7 @@
                    width="24" height="24" class="rounded border bg-light"></svg>
               <img th:if="${!#strings.isEmpty(account?.profileImage)}"
                    th:src="${account.profileImage}"
-                   width="24" height="24" class="rounded border"/>
+                   width="24" height="24" class="rounded border" alt="프로필 이미지"/>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end"
                 aria-labelledby="profileDropdown">

@@ -1,7 +1,8 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="scriptFragment">
+  <script defer th:src="@{/node_modules/jquery/dist/jquery.min.js}"></script>
   <script defer th:src="@{/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js}"></script>
-  <script defer th:src="@{/node_modules/jquery/dist/jquery.slim.js}"></script>
+  <script defer th:src="@{/node_modules/jdenticon/dist/jdenticon.min.js}"></script>
 
   <script type="application/javascript" th:fragment="form-validation">
     (function () {
