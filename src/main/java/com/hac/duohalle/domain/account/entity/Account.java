@@ -118,6 +118,10 @@ public class Account extends BaseTimeEntity {
         this.emailCheckTokenGeneratedAt = LocalDateTime.now();
     }
 
+    public boolean canSendConfirmEmail() {
+        return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

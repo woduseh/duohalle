@@ -133,7 +133,7 @@ class AccountControllerTest {
         Account account = accountRepository.findByEmail(rightEmail);
 
         // when - then
-        mvc.perform(get("/sign-up/check-email-token")
+        mvc.perform(get("/check-email-token")
                         .param("token", account.getEmailCheckToken())
                         .param("email", rightEmail))
                 .andExpect(status().isOk())
@@ -145,7 +145,7 @@ class AccountControllerTest {
     @DisplayName("회원 가입 인증 처리 - 실패")
     @Test
     void confirmSignUpFailureTest() throws Exception {
-        mvc.perform(get("/sign-up/check-email-token")
+        mvc.perform(get("/check-email-token")
                         .param("checkEmailToken", "wrongToken")
                         .param("email", "wrongEmail"))
                 .andExpect(status().isOk())

@@ -3,11 +3,6 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="content">
   <body class="bg-light">
-  <div class="alert alert-warning" role="alert"
-       th:if="${account != null && !account?.emailVerified}">
-    듀오할래 가입을 완료하려면 <a href="#" th:href="@{/check-email(email=${account.email})}" class="alert-link">계정
-    인증 이메일을 확인</a>하세요.
-  </div>
   <section class="jumbotron text-center">
     <div class="container">
       <br>

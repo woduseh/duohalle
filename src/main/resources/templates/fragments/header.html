@@ -86,5 +86,20 @@
       </div>
     </div>
   </nav>
+  <div class="py-0 text-center" th:if="${error != null}">
+    <div th:each="errorMessage : ${error}">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        [[${errorMessage}]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  <body class="bg-light">
+  <div class="alert alert-warning" role="alert"
+       th:if="${account != null && !account?.emailVerified}">
+    듀오할래 가입을 완료하려면 <a href="#" th:href="@{/check-email}" class="alert-link">계정
+    인증 이메일을 확인</a>하세요.
+  </div>
+  </body>
 </header>
 </html>

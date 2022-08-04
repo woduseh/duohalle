@@ -29,18 +29,31 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception {
         http.authorizeRequests()
-                // resources
                 .antMatchers("/js/**", "/css/**", "/img/**", "/fonts/**", "/vendor/**",
                         "/node_modules/**")
+                .permitAll();
+
+        http.authorizeRequests()
+                .antMatchers("/", "/login", "/sign-up", "/sign-in", "/check-email-token",
+                        "/check-email",
+                        "/h2-console/**")
                 .permitAll()
-                .antMatchers("/", "/login", "/sign-up", "/sign-in", "/sign-up/**",
-                        "/email-login", "/h2-console/**")
-                .permitAll()
+                .antMatchers(HttpMethod.GET, "/sign-up/**", "/resend-confirm-email")
+                .hasAnyAuthority("ROLE_USER")
                 .mvcMatchers(HttpMethod.GET, "profile/*")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling();
+
+        http.formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .permitAll()
+                .and()
+                .logout()
+                .logoutSuccessUrl("/")
+                .permitAll();
 
         return http.build();
     }
