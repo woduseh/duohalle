@@ -4,6 +4,7 @@ import com.hac.duohalle.domain.account.dto.request.AccountConfirmRequestDto;
 import com.hac.duohalle.domain.account.dto.request.AccountSignUpRequestDto;
 import com.hac.duohalle.domain.account.entity.Account;
 import com.hac.duohalle.domain.account.repository.AccountRepository;
+import com.hac.duohalle.infra.config.auth.UserAccount;
 import com.hac.duohalle.infra.mail.service.MailService;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +45,8 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    private void accountInfoDuplicateCheck(AccountSignUpRequestDto dto) {
+    private void accountInfoDuplicateCheck(AccountSignUpRequestDto dto)
+            throws IllegalStateException {
         Optional<Account> accountFindByEmail = accountRepository.findAccountByEmail(dto.getEmail());
         if (accountFindByEmail.isPresent()) {
             throw new IllegalArgumentException("Email already exists");
@@ -85,7 +87,7 @@ public class AccountService {
     public void login(Account account) {
         SecurityContextHolder.getContext()
                 .setAuthentication(new UsernamePasswordAuthenticationToken(
-                        account.getNickname(), account.getPassword(),
+                        new UserAccount(account), account.getPassword(),
                         List.of(new SimpleGrantedAuthority("ROLE_USER"))));
     }
 }

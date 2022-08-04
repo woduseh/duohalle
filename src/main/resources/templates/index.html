@@ -3,16 +3,20 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <th:block layout:fragment="content">
   <body class="bg-light">
-  <div class="container">
-    <div class="py-5 text-center">
-      <h2>듀오할래</h2>
-    </div>
-  </div>
   <div class="alert alert-warning" role="alert"
        th:if="${account != null && !account?.emailVerified}">
     듀오할래 가입을 완료하려면 <a href="#" th:href="@{/check-email(email=${account.email})}" class="alert-link">계정
     인증 이메일을 확인</a>하세요.
   </div>
+  <section class="jumbotron text-center">
+    <div class="container">
+      <br>
+      <h1>듀오할래</h1>
+      <p>
+        <a th:href="@{/}" class="btn btn-primary my-2">첫 페이지로 이동</a>
+      </p>
+    </div>
+  </section>
   </body>
 </th:block>
 </html>
