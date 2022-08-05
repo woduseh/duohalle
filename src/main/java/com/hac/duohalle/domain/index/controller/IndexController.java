@@ -1,7 +1,7 @@
 package com.hac.duohalle.domain.index.controller;
 
-import com.hac.duohalle.domain.account.entity.Account;
-import com.hac.duohalle.infra.config.auth.CurrentUser;
+import com.hac.duohalle.infra.config.auth.LoginAccount;
+import com.hac.duohalle.infra.config.auth.SessionAccount;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class IndexController {
 
     @GetMapping("/")
-    public String index(@CurrentUser Account account, Model model) {
+    public String index(@LoginAccount SessionAccount account, Model model) {
         if (account != null) {
             model.addAttribute("account", account);
         } else {

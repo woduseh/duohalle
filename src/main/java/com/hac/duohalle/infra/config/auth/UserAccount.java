@@ -10,12 +10,12 @@ import org.springframework.security.core.userdetails.User;
 @Getter
 public class UserAccount extends User {
 
-    private final Account account;
+    private final SessionAccount account;
 
     public UserAccount(Account account) {
         super(account.getNickname(), account.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER")));
-        this.account = account;
+        this.account = SessionAccount.of(account);
     }
 
     @Override

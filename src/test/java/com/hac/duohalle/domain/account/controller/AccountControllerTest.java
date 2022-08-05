@@ -15,7 +15,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.hac.duohalle.domain.account.entity.Account;
 import com.hac.duohalle.domain.account.repository.AccountRepository;
+import com.hac.duohalle.domain.account.service.AccountService;
+import com.hac.duohalle.infra.config.auth.WithMockUserAccount;
 import com.hac.duohalle.infra.mail.service.MailService;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +42,7 @@ class AccountControllerTest {
 
     private MockMvc mvc;
     private final WebApplicationContext context;
+    private final AccountService accountService;
     private final AccountRepository accountRepository;
 
     @MockBean
@@ -109,8 +114,49 @@ class AccountControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(unauthenticated());
+    }
 
-        // TODO: 회원 가입 실패 시 에러 메시지 화면에 반환하고 해당 값 존재하는지 테스트
+    @DisplayName("회원 가입 인증 화면")
+    @WithMockUserAccount
+    @Test
+    void signUpConfirmViewTest() throws Exception {
+        mvc.perform(get("/check-email")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(authenticated());
+    }
+
+    @DisplayName("인증 메일 재전송 - 성공")
+    @Test
+    void resendSignUpConfirmSuccess() throws Exception {
+        // given
+        String email = "jackdu@fakeemail.com";
+        String password = "fakePassword!";
+        String nickname = "jackdu";
+
+        accountRepository.save(Account.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .emailCheckTokenGeneratedAt(LocalDateTime.now().minus(2, ChronoUnit.HOURS))
+                .build());
+
+        // when & then
+        mvc.perform(get("/resend-confirm-email")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("isEmailVerified", true));
+    }
+
+    @DisplayName("인증 메일 재전송 - 실패")
+    @WithMockUserAccount
+    @Test
+    void resendSignUpConfirmFailure() throws Exception {
+        mvc.perform(get("/resend-confirm-email")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("error"))
+                .andExpect(model().attribute("isEmailVerified", false));
     }
 
     @DisplayName("회원 가입 인증 처리 - 성공")

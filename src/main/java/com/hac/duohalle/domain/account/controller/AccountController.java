@@ -5,7 +5,8 @@ import com.hac.duohalle.domain.account.dto.request.AccountSignUpRequestDto;
 import com.hac.duohalle.domain.account.entity.Account;
 import com.hac.duohalle.domain.account.service.AccountService;
 import com.hac.duohalle.domain.account.validator.AccountSignUpRequestDtoValidator;
-import com.hac.duohalle.infra.config.auth.CurrentUser;
+import com.hac.duohalle.infra.config.auth.LoginAccount;
+import com.hac.duohalle.infra.config.auth.SessionAccount;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -63,13 +64,13 @@ public class AccountController {
     }
 
     @GetMapping("/check-email")
-    public String checkEmail(@CurrentUser Account account, Model model) {
+    public String checkEmail(@LoginAccount SessionAccount account, Model model) {
         model.addAttribute("email", account.getEmail());
         return "account/check-email";
     }
 
     @GetMapping("/resend-confirm-email")
-    public String resendConfirmEmail(@CurrentUser Account account, Model model) {
+    public String resendConfirmEmail(@LoginAccount SessionAccount account, Model model) {
         if (!account.canSendConfirmEmail()) {
             model.addAttribute("error", "인증 메일은 1시간에 한번만 전송할 수 있습니다.");
             model.addAttribute("isEmailVerified", account.isEmailVerified());

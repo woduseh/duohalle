@@ -4,10 +4,12 @@ import com.hac.duohalle.domain.account.dto.request.AccountConfirmRequestDto;
 import com.hac.duohalle.domain.account.dto.request.AccountSignUpRequestDto;
 import com.hac.duohalle.domain.account.entity.Account;
 import com.hac.duohalle.domain.account.repository.AccountRepository;
+import com.hac.duohalle.infra.config.auth.SessionAccount;
 import com.hac.duohalle.infra.config.auth.UserAccount;
 import com.hac.duohalle.infra.mail.service.MailService;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService implements UserDetailsService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final HttpSession httpSession;
     private final AccountRepository accountRepository;
     private final MailService mailService;
 
@@ -77,8 +80,10 @@ public class AccountService implements UserDetailsService {
                 .setAuthentication(new UsernamePasswordAuthenticationToken(
                         new UserAccount(account), account.getPassword(),
                         List.of(new SimpleGrantedAuthority("ROLE_USER"))));
+        httpSession.setAttribute("account", SessionAccount.of(account));
     }
 
+    @Transactional
     public void resendConfirmEmail(String email) {
         Optional<Account> account = accountRepository.findAccountByEmail(email);
         account.ifPresentOrElse(
@@ -89,6 +94,7 @@ public class AccountService implements UserDetailsService {
         try {
             checkConfirmEmailCanSend(account);
             mailService.sendSignUpConfirmEmail(account);
+            account.generateEmailCheckToken();
         } catch (IllegalStateException e) {
             logger.warn("Account confirm fail - Email: {}, Error: {}", account.getEmail(),
                     e.getMessage());
@@ -111,6 +117,8 @@ public class AccountService implements UserDetailsService {
         Account account = accountRepository.findAccountByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "Account not found - Email: " + username));
+
+        httpSession.setAttribute("account", SessionAccount.of(account));
 
         return new UserAccount(account);
     }
