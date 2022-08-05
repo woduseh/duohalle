@@ -55,7 +55,9 @@ public class AccountController {
         logger.info("User try to confirm account - Email: {}", dto.getEmail());
         Account account = accountService.confirm(dto);
 
-        accountService.login(account);
+        if (account.isEmailVerified()) {
+            accountService.login(account);
+        }
         model.addAttribute("isEmailVerified", account.isEmailVerified());
         return "account/confirm";
     }
