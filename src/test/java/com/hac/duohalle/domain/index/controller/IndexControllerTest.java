@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.hac.duohalle.domain.account.dto.request.AccountSignUpRequestDto;
 import com.hac.duohalle.domain.account.service.AccountService;
-import com.hac.duohalle.infra.config.auth.WithMockUserAccount;
+import com.hac.duohalle.infra.config.auth.WithMockAccount;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +45,7 @@ class IndexControllerTest {
     }
 
     @DisplayName("메인 화면 - 회원")
-    @WithMockUserAccount
+    @WithMockAccount
     @Test
     void indexForLoginUser() throws Exception {
         mvc.perform(get("/")
@@ -114,7 +114,7 @@ class IndexControllerTest {
     }
 
     @DisplayName("로그아웃")
-    @WithMockUserAccount
+    @WithMockAccount
     @Test
     void logout() throws Exception {
         mvc.perform(post("/logout")

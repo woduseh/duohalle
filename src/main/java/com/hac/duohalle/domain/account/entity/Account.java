@@ -1,6 +1,6 @@
 package com.hac.duohalle.domain.account.entity;
 
-import com.hac.duohalle.domain.global.entity.BaseTimeEntity;
+import com.hac.duohalle.domain.global.entity.BaseEntity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,7 +27,7 @@ import org.hibernate.validator.constraints.URL;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account extends BaseTimeEntity {
+public class Account extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,10 +69,9 @@ public class Account extends BaseTimeEntity {
 
     @Comment("사용자 이미지 URL")
     @URL(message = "사용자 이미지 URL이 올바르지 않습니다.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
     private String imageUrl;
-
-    @Comment("계정 삭제 여부")
-    private boolean isDeleted;
 
     @Comment("웹 푸시 사용 여부")
     private boolean webPushEnabled;

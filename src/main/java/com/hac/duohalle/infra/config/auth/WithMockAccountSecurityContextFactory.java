@@ -13,12 +13,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
 @RequiredArgsConstructor
-public class WithMockUserAccountSecurityContextFactory implements
-        WithSecurityContextFactory<WithMockUserAccount> {
+public class WithMockAccountSecurityContextFactory implements
+        WithSecurityContextFactory<WithMockAccount> {
 
     private final HttpSession httpSession;
+
     @Override
-    public SecurityContext createSecurityContext(WithMockUserAccount customUser) {
+    public SecurityContext createSecurityContext(WithMockAccount customUser) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         Account account = Account.builder()

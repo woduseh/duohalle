@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.hac.duohalle.domain.account.entity.Account;
 import com.hac.duohalle.domain.account.repository.AccountRepository;
 import com.hac.duohalle.domain.account.service.AccountService;
-import com.hac.duohalle.infra.config.auth.WithMockUserAccount;
+import com.hac.duohalle.infra.config.auth.WithMockAccount;
 import com.hac.duohalle.infra.mail.service.MailService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -117,7 +117,7 @@ class AccountControllerTest {
     }
 
     @DisplayName("회원 가입 인증 화면")
-    @WithMockUserAccount
+    @WithMockAccount
     @Test
     void signUpConfirmViewTest() throws Exception {
         mvc.perform(get("/check-email")
@@ -149,7 +149,7 @@ class AccountControllerTest {
     }
 
     @DisplayName("인증 메일 재전송 - 실패")
-    @WithMockUserAccount
+    @WithMockAccount
     @Test
     void resendSignUpConfirmFailure() throws Exception {
         mvc.perform(get("/resend-confirm-email")
@@ -168,6 +168,7 @@ class AccountControllerTest {
         String rightNickname = "jackdu";
 
         mvc.perform(post("/sign-up")
+
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("email", rightEmail)
                         .param("password", rightPassword)

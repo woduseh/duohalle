@@ -33,3 +33,8 @@ spring:
     driver-class-name: org.h2.Driver
   session:
     store-type: jdbc
+
+#server:
+#  servlet:
+#    session:
+#      timeout: 3600
