@@ -1,6 +1,7 @@
 package com.hac.duohalle.domain.account.entity;
 
 import com.hac.duohalle.domain.global.entity.BaseEntity;
+import com.hac.duohalle.domain.profile.dto.request.ProfileChangeRequestDto;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -119,6 +120,21 @@ public class Account extends BaseEntity {
 
     public boolean canSendConfirmEmail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
+    }
+
+    public void updateProfile(ProfileChangeRequestDto profileChangeRequestDto) {
+        this.bio = profileChangeRequestDto.getBio();
+        this.occupation = profileChangeRequestDto.getOccupation();
+        this.profileUrl = profileChangeRequestDto.getProfileUrl();
+        this.imageUrl = profileChangeRequestDto.getImageUrl();
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     @Override

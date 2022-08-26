@@ -35,7 +35,7 @@ public class AccountService implements UserDetailsService {
     public Account signUp(AccountSignUpRequestDto dto) {
         try {
             Account newAccount = saveNewAccount(dto);
-            mailService.sendSignUpConfirmEmail(newAccount);
+            sendConfirmEmail(newAccount);
 
             return newAccount;
         } catch (IllegalStateException e) {
@@ -64,7 +64,6 @@ public class AccountService implements UserDetailsService {
         try {
             if (account.getEmailCheckToken().equals(dto.getToken())) {
                 account.makeEmailVerified();
-                accountRepository.save(account);
                 logger.info("Account confirmed - Email: {} ", account.getEmail());
             } else {
                 throw new IllegalStateException("Email check token is not matched");

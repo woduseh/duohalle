@@ -54,9 +54,10 @@ public class WebSecurityConfig {
                 .permitAll();
 
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/sign-up/**", "/resend-confirm-email")
+                .antMatchers(HttpMethod.GET, "/sign-up/**", "/resend-confirm-email",
+                        "/profile/setting/**")
                 .hasAnyAuthority("ROLE_USER")
-                .mvcMatchers(HttpMethod.GET, "profile/*")
+                .mvcMatchers(HttpMethod.GET, "/profile/*")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
